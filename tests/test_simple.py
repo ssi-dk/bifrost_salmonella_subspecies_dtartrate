@@ -21,7 +21,7 @@ def test_connection():
     assert "TEST" in os.environ['BIFROST_DB_KEY'].upper()  # A very basic piece of protection ensuring the word test is in the DB
 
 class TestBifrostEnterobase:
-    component_name = "enterobase__v0_0_1"
+    component_name = "enterobase__v1_0_0__"
     current_dir = os.getcwd()
     test_dir = "/bifrost/test_data/output/test__enterobase/"
     json_entries = [
@@ -38,7 +38,9 @@ class TestBifrostEnterobase:
                 },
                 "mlst": {
                     "summary": {
-                        "sequence_type": 34
+                        "sequence_type": [
+                            {"senterica":"34"}
+                            ]
                     }
 
                 },
