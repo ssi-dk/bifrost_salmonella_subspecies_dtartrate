@@ -2,7 +2,7 @@
 # BUILD_ENV options (dev, test, prod) dev for local testing and test for github actions testing on prod ready code
 ARG BUILD_ENV="prod"
 ARG MAINTAINER="krki@ssi.dk;"
-ARG BIFROST_COMPONENT_NAME="bifrost_enterobase"
+ARG BIFROST_COMPONENT_NAME="bifrost_salmonella_subspecies_dtartrate"
 ARG FORCE_DOWNLOAD=true
 
 #---------------------------------------------------------------------------------------------------
@@ -19,7 +19,9 @@ ONBUILD LABEL \
     maintainer="${MAINTAINER}"
 ONBUILD RUN \
     conda install -yq -c conda-forge -c bioconda -c default snakemake-minimal==5.7.1; \
-    conda install -yq -c conda-forge curl;
+    conda install -yq -c conda-forge curl; \
+    conda install -yq -c bioconda bwa==0.7.17; \
+    conda install -yq -c bioconda elprep==5.0.1;
 
 #---------------------------------------------------------------------------------------------------
 # Base for dev environement
@@ -68,5 +70,5 @@ ARG BIFROST_COMPONENT_NAME
 # Run and entry commands
 #---------------------------------------------------------------------------------------------------
 WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}
-ENTRYPOINT ["python3", "-m", "bifrost_enterobase"]
-CMD ["python3", "-m", "bifrost_enterobase", "--help"]
+ENTRYPOINT ["python3", "-m", "bifrost_salmonella_subspecies_dtartrate"]
+CMD ["python3", "-m", "bifrost_salmonella_subspecies_dtartrate", "--help"]

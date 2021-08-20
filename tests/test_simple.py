@@ -9,7 +9,7 @@ from bifrostlib.datahandling import SampleReference
 from bifrostlib.datahandling import Sample
 from bifrostlib.datahandling import RunReference
 from bifrostlib.datahandling import Run
-from bifrost_enterobase import launcher
+from bifrost_salmonella_subspecies_dtartrate import launcher
 import pymongo
 import os
 import shutil
@@ -20,10 +20,10 @@ def test_connection():
     assert datahandling.has_a_database_connection()
     assert "TEST" in os.environ['BIFROST_DB_KEY'].upper()  # A very basic piece of protection ensuring the word test is in the DB
 
-class TestBifrostEnterobase:
-    component_name = "enterobase__v1_0_0__"
+class TestBifrostSubspeciesDtartrate:
+    component_name = "salmonella_subspecies_dtartrate__v1_0_0__"
     current_dir = os.getcwd()
-    test_dir = "/bifrost/test_data/output/test__enterobase/"
+    test_dir = "/bifrost/test_data/output/test__salmonella_subspecies_dtartrate"
     json_entries = [
         {
             "_id": {"$oid": "000000000000000000000001"}, 
@@ -96,7 +96,7 @@ class TestBifrostEnterobase:
         ]
         launcher.main(args=test_args)
         assert os.path.isfile(f"{self.test_dir}/{self.component_name}/datadump_complete")
-        shutil.rmtree(self.test_dir)
-        assert not os.path.isdir(f"{self.test_dir}/{self.component_name}")
+        #shutil.rmtree(self.test_dir)
+        #assert not os.path.isdir(f"{self.test_dir}/{self.component_name}")
 
 
