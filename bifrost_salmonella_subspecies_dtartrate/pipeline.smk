@@ -94,7 +94,7 @@ rule run_subspecies_dtartrate:
     output:
         _file = f"{component['name']}/subspecies_dtartrate.txt"
     shell:
-         "{params.scriptfile} {params.mlsttype} {input.reads[0]} {input.reads[1]} 1> {output._file}"
+         "{params.scriptfile} {params.mlsttype} --reads {input.reads[0]} {input.reads[1]} 1> {output._file}"
 
 #* Dynamic section: end ****************************************************************************
 

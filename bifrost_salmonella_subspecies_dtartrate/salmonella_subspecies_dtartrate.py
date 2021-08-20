@@ -43,4 +43,4 @@ if __name__ == "__main__":
 	args = get_args()
 	dtartrate_result = dtartrate(args.reads[0].name, args.reads[1].name)
 	subspecies_result = subspecies(args.ST)
-	print("\t".join([args.id, args.ST, "".join(dtartrate_result), subspecies_result]))
+	print("\t".join([args.id, args.ST, "".join(dtartrate_result[0]), subspecies_result[0]]))
