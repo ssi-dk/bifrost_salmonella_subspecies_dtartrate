@@ -89,7 +89,7 @@ rule run_subspecies_dtartrate:
         rules.check_requirements.output.check_file,
         reads = sample['categories']['paired_reads']['summary']['data']
     params:
-        mlsttype = sample['categories']['mlst']['summary']['sequence_type'][0]['senterica'],
+        mlsttype = sample['categories']['mlst']['summary']['sequence_type']['senterica'],
         scriptfile = f"/bifrost/components/bifrost_salmonella_subspecies_dtartrate/bifrost_salmonella_subspecies_dtartrate/salmonella_subspecies_dtartrate.py"
     output:
         _file = f"{component['name']}/subspecies_dtartrate.txt"

@@ -38,11 +38,10 @@ class TestBifrostSubspeciesDtartrate:
                 },
                 "mlst": {
                     "summary": {
-                        "sequence_type": [
-                            {"senterica":"34"}
-                            ]
+                        "sequence_type": {
+                            "senterica":"34"
+                        }
                     }
-
                 },
                 "species_detection": {
                     "summary": {
