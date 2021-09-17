@@ -40,7 +40,7 @@ def main(args):
         end_pos = pos+args.length
     else:
         end_pos = pos+1
-    get_pos_from_sam(pos, end_pos, args.file)
+    print(''.join(get_pos_from_sam(pos, end_pos, args.file)))
 
 if __name__ == "__main__":
     args = get_args()

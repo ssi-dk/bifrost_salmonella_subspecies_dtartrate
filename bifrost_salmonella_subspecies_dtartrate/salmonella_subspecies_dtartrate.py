@@ -2,15 +2,19 @@
 
 import argparse
 import subprocess as sp
-
 component_dir= "/bifrost/components/bifrost_salmonella_subspecies_dtartrate"
-DTARTRATEDB = component_dir + "/ressources/d-Tartrate/srst2_d_Tartrate.fasta"
+DTARTRATEDB = component_dir + "/ressources/d_Tartrate/srst2_d_Tartrate.fasta"
 
 def dtartrate(read1, read2):
 	bwa = sp.Popen(
 		["bwa", "mem", DTARTRATEDB, read1, read2], 
 		stdout = sp.PIPE, 
 		stderr = sp.PIPE).communicate()
+	# sp.Popen(
+	# 	["bwa", "index", DTARTRATEDB]).communicate()
+	# bwa = sp.Popen(
+	# 	["bwa", "mem", DTARTRATEDB, read1, read2], 
+	# 	stdout = sp.PIPE).communicate()
 	elprep = sp.Popen(
 		["elprep","filter", "/dev/stdin", "/dev/stdout", "--filter-unmapped-reads", "--sorting-order", "coordinate", "--nr-of-threads", "1"],
 		stdin=sp.PIPE, 
