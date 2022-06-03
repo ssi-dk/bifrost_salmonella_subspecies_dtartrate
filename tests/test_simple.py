@@ -21,7 +21,7 @@ def test_connection():
     assert "TEST" in os.environ['BIFROST_DB_KEY'].upper()  # A very basic piece of protection ensuring the word test is in the DB
 
 class TestBifrostSubspeciesDtartrate:
-    component_name = "salmonella_subspecies_dtartrate__v1_0_4__"
+    component_name = "salmonella_subspecies_dtartrate__v1_0_5__"
     current_dir = os.getcwd()
     test_dir = "/bifrost/test_data/output/test__salmonella_subspecies_dtartrate"
     json_entries = [
