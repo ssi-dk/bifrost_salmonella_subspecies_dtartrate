@@ -36,6 +36,12 @@ onerror:
     if samplecomponent['status'] == "Running":
         common.set_status_and_save(sample, samplecomponent, "Failure")
 
+envvars:
+    "BIFROST_INSTALL_DIR",
+    "CONDA_PREFIX"
+
+resources_dir=f"{os.environ['BIFROST_INSTALL_DIR']}/bifrost/components/bifrost_{component['display_name']}"
+
 rule all:
     input:
         # file is defined by datadump function
@@ -76,8 +82,28 @@ rule check_requirements:
 #- Templated section: end --------------------------------------------------------------------------
 
 #* Dynamic section: start **************************************************************************
-rule_name = "run_subspecies_dtartrate"
-rule run_subspecies_dtartrate:
+rule_name = "run_subspecies"
+rule run_subspecies:
+    message:
+        f"Running step:{rule_name}"
+    log:
+        out_file = f"{component['name']}/log/{rule_name}.out.log",
+        err_file = f"{component['name']}/log/{rule_name}.err.log",
+    benchmark:
+        f"{component['name']}/benchmarks/{rule_name}.benchmark"
+    input:
+        rules.check_requirements.output.check_file,
+    params:
+        mlsttype = sample['categories']['mlst']['summary']['sequence_type']['senterica'],
+        subspecies_reference = f"{resources_dir}/{component['resources']['subspecies_reference']}",
+        mlst_db = f"{resources_dir}/{component['resources']['mlst_db']}"
+    output:
+        _file = f"{component['name']}/subspecies_dtartrate.txt"
+    script:
+        os.path.join(os.path.dirname(workflow.snakefile), "rule__subspecies.py")
+
+rule_name = "run_dtartrate"
+rule run_dtartrate:
     message:
         f"Running step:{rule_name}"
     log:
@@ -89,12 +115,13 @@ rule run_subspecies_dtartrate:
         rules.check_requirements.output.check_file,
         reads = sample['categories']['paired_reads']['summary']['data']
     params:
-        mlsttype = sample['categories']['mlst']['summary']['sequence_type']['senterica'],
-        scriptfile = f"/bifrost/components/bifrost_salmonella_subspecies_dtartrate/bifrost_salmonella_subspecies_dtartrate/salmonella_subspecies_dtartrate.py"
+        dtartratedb = f"{resources_dir}/{component['resources']['dtartrate_db']}"
     output:
-        _file = f"{component['name']}/subspecies_dtartrate.txt"
-    shell:
-         "{params.scriptfile} {params.mlsttype} --reads {input.reads[0]} {input.reads[1]} 1> {output._file}"
+        _file = f"{component['name']}/dtartrate.txt"
+    script:
+         os.path.join(os.path.dirname(workflow.snakefile), "rule__dtartrate.py")
+
+
 
 #* Dynamic section: end ****************************************************************************
 

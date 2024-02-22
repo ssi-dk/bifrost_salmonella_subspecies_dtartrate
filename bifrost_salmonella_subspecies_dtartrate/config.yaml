@@ -1,9 +1,9 @@
 #-Basic info----------------------------------------------------------------------------------------
 display_name: salmonella_subspecies_dtartrate
-name: salmonella_subspecies_dtartrate__v1_0_5__
+name: salmonella_subspecies_dtartrate__v1.0.5
 version:
   schema: ["v2_1_0"]
-  code: v1_0_5__
+  code: v1.0.5
 #---------------------------------------------------------------------------------------------------
 
 #-Details-------------------------------------------------------------------------------------------
@@ -30,8 +30,10 @@ category: [serotype]
 #---------------------------------------------------------------------------------------------------
 
 #-Required resource files---------------------------------------------------------------------------
-#resources:
-#  adapters_fasta: "/bifrost/components/bifrost_min_read_check/resources/adapters.fasta"
+resources:
+  dtartrate_db: "/resources/d_Tartrate/srst2_d_Tartrate.fasta"
+  subspecies_reference: "/resources/salmonella_subspecies_STs.txt"
+  mlst_db: "/resources/salmonella/"
 #---------------------------------------------------------------------------------------------------
 
 #-Requirements to run component---------------------------------------------------------------------

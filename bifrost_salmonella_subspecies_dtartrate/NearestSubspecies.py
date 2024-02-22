@@ -6,7 +6,7 @@ import SeqUtils
 import os, glob
 import re
 
-ressource_dir = "/bifrost/components/bifrost_salmonella_subspecies_dtartrate"
+resource_dir = "/bifrost/components/bifrost_salmonella_subspecies_dtartrate"
 def parse_args():
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group()
@@ -14,9 +14,9 @@ def parse_args():
     group.add_argument('--file', type=argparse.FileType('r'))
     group.add_argument('--sequence', type=str)
     parser.add_argument('--references', type=argparse.FileType('r'), metavar='file',
-        default=ressource_dir + "/ressources/salmonella_subspecies_STs.txt")
+        default=resource_dir + "/resources/salmonella_subspecies_STs.txt")
     parser.add_argument('--mlstdir',type=str,
-                        default=ressource_dir + "/ressources/salmonella",
+                        default=resource_dir + "/resources/salmonella",
                         help="Directory containing MLST definitions.")
     parser.add_argument('--fetch-mlst', action='store_true')
     parser.add_argument('--species', type=str, default="Salmonella enterica")
@@ -110,7 +110,36 @@ def seqscore(ref, query, sw):
         print(refseq, file=sys.stderr)
     score = SeqUtils.kdiff(refseq, query)
     return score
-    
+
+def read_mlst_database(mlstDir):    
+    mlstdb = dict()
+    for mlstFile in glob.glob("/".join((mlstDir, "*.tfa"))):
+        mlstdb.update(parseMLSTseqs(mlstFile))
+    for mlstTable in glob.glob("/".join((mlstDir, "*.txt"))):
+        (alleles, header) = parseMLSTalleles(mlstTable)
+    return (mlstdb, alleles, header)
+
+def score_subspecies(query, refalleles, subsp, verbose=False):
+    result = list()
+    refkeys = list(refalleles.keys())
+    refkeys.sort()
+    for ref in refkeys:
+        if verbose:
+            print(">{}".format(ref), file=sys.stderr)
+        score = seqscore(refalleles[ref], query, False)
+        result.append((score, subsp[ref]))
+    result.sort(key=lambda x:x[0])
+    return result
+
+def query_from_ST(ST, mlstDir):
+    mlstdb, alleles, header = read_mlst_database(mlstDir)
+    query = alleles2seq(mlstdb,alleles[ST])
+    return query
+
+def subspecies_from_query(query, refFile):
+    (reference_alleles, subspecies) = parseRef(refFile)
+    result = score_subspecies(query, reference_alleles, subspecies)
+    return result
 
 if __name__ == "__main__":
     opts = parse_args()
@@ -121,11 +150,8 @@ if __name__ == "__main__":
     if opts.fetch_mlst:
         updateMLST(species, mlstDir)
     ## Read MLST database
-    mlstdb = dict()
-    for mlstFile in glob.glob("/".join((mlstDir, "*.tfa"))):
-        mlstdb.update(parseMLSTseqs(mlstFile))
-    for mlstTable in glob.glob("/".join((mlstDir, "*.txt"))):
-        (alleles, header) = parseMLSTalleles(mlstTable)
+    mlstdb, alleles, header = read_mlst_database(mlstDir)
+    ## Get query Seq
     if opts.st:
         query = alleles2seq(mlstdb,alleles[opts.st])
     elif opts.sequence:
@@ -136,24 +162,10 @@ if __name__ == "__main__":
         query = alleles2seq(mlstdb,input_alleles)
     else:
         query = parseAlleles(opts.file)
-    (refalleles, subsp) = parseRef(refFile)
-    if opts.verbose and opts.st:
-        print(">ST{}".format(opts.mlst), file=sys.stderr)
-        print(alleles2seq(mlstdb,alleles[opts.st]), file=sys.stderr)
-
-    best = None
-    result = list()
-    refkeys = list(refalleles.keys())
-    refkeys.sort()
-    for ref in refkeys:
-        if opts.verbose:
-            print(">{}".format(ref), file=sys.stderr)
-        score = seqscore(refalleles[ref], query, False)
-        result.append((score, subsp[ref]))
-    result.sort(key=lambda rec:rec[0])
+    result = subspecies_from_query(query, refFile)
     if opts.print_all:
-        for (score,subsp) in result:
-            print("{}\t{}".format(score,subsp))
+        for (score,subspecies) in result:
+            print("{}\t{}".format(score,subspecies))
     else:
         print(result[0][1])
 
