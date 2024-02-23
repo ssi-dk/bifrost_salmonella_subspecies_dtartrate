@@ -31,9 +31,9 @@ category: [serotype]
 
 #-Required resource files---------------------------------------------------------------------------
 resources:
-  dtartrate_db: "/resources/d_Tartrate/srst2_d_Tartrate.fasta"
-  subspecies_reference: "/resources/salmonella_subspecies_STs.txt"
-  mlst_db: "/resources/salmonella/"
+  dtartrate_db: "resources/d_Tartrate/srst2_d_Tartrate.fasta"
+  subspecies_reference: "resources/salmonella_subspecies_STs.txt"
+  mlst_db: "resources/salmonella/"
 #---------------------------------------------------------------------------------------------------
 
 #-Requirements to run component---------------------------------------------------------------------

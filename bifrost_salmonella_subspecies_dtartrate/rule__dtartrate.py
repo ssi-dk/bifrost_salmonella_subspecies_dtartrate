@@ -5,16 +5,6 @@ import getposfromsam
 import traceback
 from collections import Counter
 
-def run_cmd(command, log):
-    with open(log.out_file, "a+") as out, open(log.err_file, "a+") as err:
-        command_log_out, command_log_err = subprocess.Popen(command, shell=True).communicate()
-        if command_log_err == None:
-            command_log_err = ""
-        if command_log_out == None:
-            command_log_out = ""
-        out.write(command_log_out)
-        err.write(command_log_err)
-
 def rule__dtartrate(input: object, output: object, dtartrate_db: str, log: object) -> None:
     try:
         bwa = subprocess.Popen(

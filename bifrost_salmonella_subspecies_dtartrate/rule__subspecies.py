@@ -32,6 +32,7 @@ def rule__subspecies(input: object, output: object, params: object, log: object)
     except Exception:
         with open(log.err_file, "w+") as fh:
             fh.write(traceback.format_exc())
+            raise
 
 rule__subspecies(
     snakemake.input,

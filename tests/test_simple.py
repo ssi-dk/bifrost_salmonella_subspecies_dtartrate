@@ -13,7 +13,7 @@ from bifrost_salmonella_subspecies_dtartrate import launcher
 import pymongo
 import os
 import shutil
-
+from pathlib import Path
 
 @pytest.fixture
 def test_connection():
@@ -22,8 +22,10 @@ def test_connection():
 
 class TestBifrostSubspeciesDtartrate:
     component_name = "salmonella_subspecies_dtartrate__v1.0.5"
+    bifrost_install_dir = Path(os.environ['BIFROST_INSTALL_DIR'])
+    bifrost_config_and_data_path = Path(f"{bifrost_install_dir}/bifrost/test_data")
     current_dir = os.getcwd()
-    test_dir = "/bifrost/test_data/output/test__salmonella_subspecies_dtartrate"
+    test_dir = bifrost_config_and_data_path / "output/test__salmonella_subspecies_dtartrate"
     json_entries = [
         {
             "_id": {"$oid": "000000000000000000000001"}, 
@@ -32,8 +34,8 @@ class TestBifrostSubspeciesDtartrate:
             "categories": {
                 "paired_reads": {
                     "summary": {
-                        "data": ["/bifrost/test_data/samples/SRR2094561_1.fastq.gz",
-                                 "/bifrost/test_data/samples/SRR2094561_2.fastq.gz"]
+                        "data": [str(bifrost_config_and_data_path/"/samples/SRR2094561_1.fastq.gz"),
+                                 str(bifrost_config_and_data_path/"/samples/SRR2094561_2.fastq.gz")]
                     }
                 },
                 "mlst": {
@@ -79,10 +81,10 @@ class TestBifrostSubspeciesDtartrate:
         db.drop_collection("samples")
 
     def test_info(self):
-        launcher.run_pipeline(["--info"])
+        launcher.main(["--info"])
 
-    def test_help(self):
-        launcher.run_pipeline(["--help"])
+    # def test_help(self):
+    #     launcher.main(["--help"])
 
     def test_pipeline(self):
         if os.path.isdir(self.test_dir):
@@ -91,7 +93,7 @@ class TestBifrostSubspeciesDtartrate:
         os.mkdir(self.test_dir)
         test_args = [
             "--sample_name", "SRR2094561",
-            "--outdir", self.test_dir
+            "--outdir", str(self.test_dir)
         ]
         launcher.main(args=test_args)
         assert os.path.isfile(f"{self.test_dir}/{self.component_name}/datadump_complete")

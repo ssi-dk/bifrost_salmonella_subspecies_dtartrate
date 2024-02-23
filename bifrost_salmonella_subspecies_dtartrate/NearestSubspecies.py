@@ -2,9 +2,10 @@
 
 import argparse
 import sys
-import SeqUtils
+from bifrost_salmonella_subspecies_dtartrate import SeqUtils
 import os, glob
 import re
+from pathlib import Path
 
 resource_dir = "/bifrost/components/bifrost_salmonella_subspecies_dtartrate"
 def parse_args():
@@ -103,48 +104,50 @@ def mlstscore(ref, target, sw):
     score = SeqUtils.kdiff(refseq, targetseq)
     return score
 
-def seqscore(ref, query, sw):
+def seqscore(ref, query, mlstdb, sw):
     score = 0
     refseq = alleles2seq(mlstdb, ref)
-    if opts.verbose:
-        print(refseq, file=sys.stderr)
     score = SeqUtils.kdiff(refseq, query)
     return score
 
 def read_mlst_database(mlstDir):    
     mlstdb = dict()
-    for mlstFile in glob.glob("/".join((mlstDir, "*.tfa"))):
+    assert mlstDir.exists()
+    for mlstFile in mlstDir.glob("*.tfa"):
         mlstdb.update(parseMLSTseqs(mlstFile))
-    for mlstTable in glob.glob("/".join((mlstDir, "*.txt"))):
+    for mlstTable in mlstDir.glob("*.txt"):
         (alleles, header) = parseMLSTalleles(mlstTable)
     return (mlstdb, alleles, header)
 
-def score_subspecies(query, refalleles, subsp, verbose=False):
+def score_subspecies(query, refalleles, subsp, mlstdb, verbose=False):
     result = list()
     refkeys = list(refalleles.keys())
     refkeys.sort()
     for ref in refkeys:
         if verbose:
             print(">{}".format(ref), file=sys.stderr)
-        score = seqscore(refalleles[ref], query, False)
+        score = seqscore(refalleles[ref], query, mlstdb, False)
         result.append((score, subsp[ref]))
     result.sort(key=lambda x:x[0])
     return result
 
-def query_from_ST(ST, mlstDir):
-    mlstdb, alleles, header = read_mlst_database(mlstDir)
+def query_from_ST(ST, mlstdb, alleles):
     query = alleles2seq(mlstdb,alleles[ST])
     return query
 
-def subspecies_from_query(query, refFile):
+def subspecies_from_query(query, refFile, mlstdb):
     (reference_alleles, subspecies) = parseRef(refFile)
-    result = score_subspecies(query, reference_alleles, subspecies)
+    result = score_subspecies(query, reference_alleles, subspecies, mlstdb)
     return result
+
+def subspecies_from_st(ST, mlstDir, reffile):
+    mlstdb, alleles, header = read_mlst_database(mlstDir)
+    return subspecies_from_query(query_from_ST(ST, mlstdb, alleles), open(reffile,'r'), mlstdb)
 
 if __name__ == "__main__":
     opts = parse_args()
-    refFile = opts.references
-    mlstDir = opts.mlstdir
+    refFile = Path(opts.references)
+    mlstDir = Path(opts.mlstdir)
     species = opts.species
     ## Update MLST database
     if opts.fetch_mlst:

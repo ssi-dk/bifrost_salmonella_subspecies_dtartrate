@@ -1,26 +1,22 @@
 #!/usr/bin/env python3
 
 import argparse
+from pathlib import Path
 import subprocess as sp
-component_dir= "/bifrost/components/bifrost_salmonella_subspecies_dtartrate"
-DTARTRATEDB = component_dir + "/ressources/d_Tartrate/srst2_d_Tartrate.fasta"
+component_dir= Path("/bifrost/components/bifrost_salmonella_subspecies_dtartrate")
+DTARTRATEDB = component_dir / "resources/d_Tartrate/srst2_d_Tartrate.fasta"
 
-def dtartrate(read1, read2):
+def dtartrate(read1, read2, dbpath=DTARTRATEDB,bin=component_dir):
 	bwa = sp.Popen(
-		["bwa", "mem", DTARTRATEDB, read1, read2], 
+		["bwa", "mem", dbpath, read1, read2], 
 		stdout = sp.PIPE, 
 		stderr = sp.PIPE).communicate()
-	# sp.Popen(
-	# 	["bwa", "index", DTARTRATEDB]).communicate()
-	# bwa = sp.Popen(
-	# 	["bwa", "mem", DTARTRATEDB, read1, read2], 
-	# 	stdout = sp.PIPE).communicate()
 	elprep = sp.Popen(
 		["elprep","filter", "/dev/stdin", "/dev/stdout", "--filter-unmapped-reads", "--sorting-order", "coordinate", "--nr-of-threads", "1"],
 		stdin=sp.PIPE, 
 		stdout = sp.PIPE).communicate(input=bwa[0])
 	getpos = sp.Popen(
-		[component_dir + "/bifrost_salmonella_subspecies_dtartrate/getposfromsam.py", "/dev/stdin", "--pos", "10"], 
+		[bin / "bifrost_salmonella_subspecies_dtartrate/getposfromsam.py", "/dev/stdin", "--pos", "10"], 
 		stdin = sp.PIPE, 
 		stdout = sp.PIPE).communicate(input=elprep[0])
 	return [getpos[0].decode().replace('\n','')]
