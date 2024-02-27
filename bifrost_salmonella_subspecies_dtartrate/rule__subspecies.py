@@ -1,8 +1,11 @@
 
 
 import subprocess
-import NearestSubspecies
 import traceback
+from pathlib import Path
+
+import NearestSubspecies
+
 
 def run_cmd(command, log):
     with open(log.out_file, "a+") as out, open(log.err_file, "a+") as err:
@@ -17,12 +20,13 @@ def run_cmd(command, log):
 def rule__subspecies(input: object, output: object, params: object, log: object) -> None:
     try:
         ST = params.mlsttype
-        mlstDir = params.mlst_db
+        mlstDir = Path(params.mlst_db)
         subspecies_ref = params.subspecies_reference
         try:
-            int(ST)
-            query = NearestSubspecies.query_from_ST(ST, mlstDir)
-            result = NearestSubspecies.subspecies_from_query(query, subspecies_ref)
+            ST = int(ST)
+            result = NearestSubspecies.subspecies_from_st(ST, mlstDir, subspecies_ref)
+            #query = NearestSubspecies.query_from_ST(ST, mlstDir)
+            #result = NearestSubspecies.subspecies_from_query(query, subspecies_ref)
             subspecies = result[0][1] # Result is a sorted table of (score, subspecies) entries
         except ValueError:
             """ No known st """

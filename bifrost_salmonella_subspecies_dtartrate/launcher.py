@@ -149,9 +149,9 @@ def run_pipeline(args: argparse.Namespace) -> None:
             sample_var = f"sample_id={args.sample_id}"
         else:
             sample_var = f"sample_name={args.sample_name}"
-        command = ["snakemake","--nolock","--cores", "all",
+        command = ["snakemake","-p","--nolock","--cores", "all",
                    "-s", os.path.join(os.path.dirname(__file__),'pipeline.smk'),
-                   "--config", f"{sample_var} component_name={COMPONENT['name']}"]
+                   "--config", f"{sample_var}", f"component_name={COMPONENT['name']}"]
         print(" ".join(command))
         process: subprocess.Popen = subprocess.Popen(
             command,
@@ -161,7 +161,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
             cwd=args.outdir
         )
         process.communicate()
-    except:
+    except Exception:
         print(traceback.format_exc())
         raise
 

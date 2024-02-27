@@ -13,6 +13,7 @@ from bifrostlib.datahandling import SampleComponent
 os.umask(0o2)
 
 try:
+    #print(config)
     sample_ref = SampleReference(_id=config.get('sample_id', None), name=config.get('sample_name', None))
     sample:Sample = Sample.load(sample_ref) # schema 2.1
     if sample is None:
@@ -44,7 +45,6 @@ resources_dir=f"{os.environ['BIFROST_INSTALL_DIR']}/bifrost/components/bifrost_{
 
 rule all:
     input:
-        # file is defined by datadump function
         f"{component['name']}/datadump_complete"
     run:
         common.set_status_and_save(sample, samplecomponent, "Success")
@@ -98,7 +98,7 @@ rule run_subspecies:
         subspecies_reference = f"{resources_dir}/{component['resources']['subspecies_reference']}",
         mlst_db = f"{resources_dir}/{component['resources']['mlst_db']}"
     output:
-        _file = f"{component['name']}/subspecies_dtartrate.txt"
+        _file = f"{component['name']}/subspecies.txt"
     script:
         os.path.join(os.path.dirname(workflow.snakefile), "rule__subspecies.py")
 
@@ -115,7 +115,7 @@ rule run_dtartrate:
         rules.check_requirements.output.check_file,
         reads = sample['categories']['paired_reads']['summary']['data']
     params:
-        dtartratedb = f"{resources_dir}/{component['resources']['dtartrate_db']}"
+        dtartrate_db = f"{resources_dir}/{component['resources']['dtartrate_db']}"
     output:
         _file = f"{component['name']}/dtartrate.txt"
     script:
@@ -137,7 +137,8 @@ rule datadump:
         f"{component['name']}/benchmarks/{rule_name}.benchmark"
     input:
         #* Dynamic section: start ******************************************************************
-        rules.run_subspecies_dtartrate.output._file  # Needs to be output of final rule
+        dtartrate = rules.run_dtartrate.output._file,  # Needs to be output of final rule
+        subspecies = rules.run_subspecies.output._file  # Needs to be output of final rule
         #* Dynamic section: end ********************************************************************
     output:
         complete = rules.all.input

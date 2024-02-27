@@ -3,6 +3,7 @@
 import argparse
 import re
 import io
+import sys
 
 def get_args():
     parser=argparse.ArgumentParser(description="Extracts bases at a certain position from a sam file")
@@ -20,7 +21,11 @@ def get_pos_from_sam(pos: int, end_pos: int, fh: io.TextIOBase):
         if line.startswith("@"):
             continue
         fields = line.split()
-        seq = fields[9]
+        try:
+            seq = fields[9]
+        except IndexError:
+            print(line,file=sys.stderr)
+            continue
         cigar = fields[5]
         alignment_start = int(fields[3])
         mo = cigar_re.match(cigar)

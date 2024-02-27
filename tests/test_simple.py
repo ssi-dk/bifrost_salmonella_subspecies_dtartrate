@@ -34,8 +34,8 @@ class TestBifrostSubspeciesDtartrate:
             "categories": {
                 "paired_reads": {
                     "summary": {
-                        "data": [str(bifrost_config_and_data_path/"/samples/SRR2094561_1.fastq.gz"),
-                                 str(bifrost_config_and_data_path/"/samples/SRR2094561_2.fastq.gz")]
+                        "data": [str(bifrost_config_and_data_path/"samples/SRR2094561_1.fastq.gz"),
+                                 str(bifrost_config_and_data_path/"samples/SRR2094561_2.fastq.gz")]
                     }
                 },
                 "mlst": {
@@ -69,7 +69,7 @@ class TestBifrostSubspeciesDtartrate:
     def teardown_class(cls):
         client = pymongo.MongoClient(os.environ['BIFROST_DB_KEY'])
         db = client.get_database()
-        cls.clear_all_collections(db)
+        #cls.clear_all_collections(db)
 
     @staticmethod
     def clear_all_collections(db):
