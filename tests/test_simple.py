@@ -1,19 +1,15 @@
-from argparse import Namespace
-import pytest
-from bifrostlib import common
-from bifrostlib import datahandling
-from bifrostlib import database_interface
-from bifrostlib.datahandling import ComponentReference
-from bifrostlib.datahandling import Component
-from bifrostlib.datahandling import SampleReference
-from bifrostlib.datahandling import Sample
-from bifrostlib.datahandling import RunReference
-from bifrostlib.datahandling import Run
-from bifrost_salmonella_subspecies_dtartrate import launcher
-import pymongo
 import os
 import shutil
+from argparse import Namespace
 from pathlib import Path
+
+import pymongo
+import pytest
+from bifrost_salmonella_subspecies_dtartrate import launcher
+from bifrostlib import common, database_interface, datahandling
+from bifrostlib.datahandling import (Component, ComponentReference, Run,
+                                     RunReference, Sample, SampleReference)
+
 
 @pytest.fixture
 def test_connection():
