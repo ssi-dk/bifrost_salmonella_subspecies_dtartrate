@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='bifrost_salmonella_subspecies_dtartrate',
-    version='1.1.1',
+    version='1.1.2',
     description='Enterobase component for salmonella serotyping',
     url='https://github.com/ssi-dk/bifrost_salmonella_subspecies_dtartrate',
     author="Kristoffer Kiil",
