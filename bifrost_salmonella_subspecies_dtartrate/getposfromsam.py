@@ -15,7 +15,7 @@ def get_args():
     return parser.parse_args()
 
 def get_pos_from_sam(pos: int, end_pos: int, fh: io.TextIOBase):
-    cigar_re = re.compile("(\d+)S.+")
+    cigar_re = re.compile(r"(\d+)S.+")
     bases = list()
     for line in fh:
         if line.startswith("@"):

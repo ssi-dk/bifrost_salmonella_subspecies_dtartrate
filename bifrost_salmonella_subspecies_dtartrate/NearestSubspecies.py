@@ -142,7 +142,10 @@ def subspecies_from_query(query, refFile, mlstdb):
 
 def subspecies_from_st(ST, mlstDir, reffile):
     mlstdb, alleles, header = read_mlst_database(mlstDir)
-    return subspecies_from_query(query_from_ST(ST, mlstdb, alleles), open(reffile,'r'), mlstdb)
+    try:
+        return subspecies_from_query(query_from_ST(ST, mlstdb, alleles), open(reffile,'r'), mlstdb)
+    except KeyError:
+        return ((None,"Unknown ST - update MLST database"),)
 
 if __name__ == "__main__":
     opts = parse_args()

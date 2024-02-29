@@ -35,7 +35,14 @@ class Test_salmonella_subspecies_dtartrate:
 		expected_subspecies = "enterica"
 		assert subspecies == expected_subspecies
 
-	def silenced_cause_slow_test_bifrost_dtartrate(self, config, tmpfile):
+	def test_bifrost_subspecie_unknown_st(self, config):
+		mlst_db = component_path / config['resources']['mlst_db']
+		subspecies_reference = component_path/config['resources']['subspecies_reference']
+		subspecies = NearestSubspecies.subspecies_from_st(7386, mlst_db, subspecies_reference)[0][1]
+		expected_subspecies = "Unknown ST - update MLST database"
+		assert subspecies == expected_subspecies
+
+	def silenced_because_slow_test_bifrost_dtartrate(self, config, tmpfile):
 		input=(bifrost_config_and_data_path/"samples/SRR2094561_1.fastq.gz",
 			   bifrost_config_and_data_path/"samples/SRR2094561_2.fastq.gz")
 		output = Object()
