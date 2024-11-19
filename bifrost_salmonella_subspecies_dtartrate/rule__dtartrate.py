@@ -11,7 +11,7 @@ def rule__dtartrate(input: object, output: object, params: object, log: object) 
     dtartrate_db = params.dtartrate_db
     try:
         bwa = subprocess.Popen(
-            ["bwa", "mem", dtartrate_db, input[0], input[1]], 
+            ["bwa", "mem", dtartrate_db, input.reads[0], input.reads[1]], 
             stdout = subprocess.PIPE, 
             stderr = subprocess.PIPE).communicate()
         elprep = subprocess.Popen(
