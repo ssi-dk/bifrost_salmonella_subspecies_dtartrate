@@ -116,7 +116,7 @@ rule run_dtartrate:
     params:
         dtartrate_db = f"{resources_dir}/{component['resources']['dtartrate_db']}"
     output:
-        filtered = f"{component['name']}/filtered.sam"
+        filtered = f"{component['name']}/filtered.sam",
         _file = f"{component['name']}/dtartrate.txt"
     script:
          os.path.join(os.path.dirname(workflow.snakefile), "rule__dtartrate.py")
