@@ -22,6 +22,9 @@ class TestBifrostSubspeciesDtartrate:
     bifrost_config_and_data_path = Path(f"{bifrost_install_dir}/bifrost/test_data")
     current_dir = os.getcwd()
     test_dir = bifrost_config_and_data_path / "output/test__salmonella_subspecies_dtartrate"
+    r1=str(bifrost_config_and_data_path/"samples/SRR2094561_1.fastq.gz")
+    r2=str(bifrost_config_and_data_path/"samples/SRR2094561_2.fastq.gz")
+
     json_entries = [
         {
             "_id": {"$oid": "000000000000000000000001"}, 
@@ -30,8 +33,7 @@ class TestBifrostSubspeciesDtartrate:
             "categories": {
                 "paired_reads": {
                     "summary": {
-                        "data": [str(bifrost_config_and_data_path/"samples/SRR2094561_1.fastq.gz"),
-                                 str(bifrost_config_and_data_path/"samples/SRR2094561_2.fastq.gz")]
+                        "data": [r1, r2]
                     }
                 },
                 "mlst": {

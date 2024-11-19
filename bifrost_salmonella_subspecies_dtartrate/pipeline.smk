@@ -13,7 +13,6 @@ from bifrostlib.datahandling import SampleComponent
 os.umask(0o2)
 
 try:
-    #print(config)
     sample_ref = SampleReference(_id=config.get('sample_id', None), name=config.get('sample_name', None))
     sample:Sample = Sample.load(sample_ref) # schema 2.1
     if sample is None:
@@ -117,6 +116,7 @@ rule run_dtartrate:
     params:
         dtartrate_db = f"{resources_dir}/{component['resources']['dtartrate_db']}"
     output:
+        filtered = f"{component['name']}/filtered.sam"
         _file = f"{component['name']}/dtartrate.txt"
     script:
          os.path.join(os.path.dirname(workflow.snakefile), "rule__dtartrate.py")
