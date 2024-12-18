@@ -30,6 +30,11 @@ except Exception as error:
     print(traceback.format_exc(), file=sys.stderr)
     raise Exception("failed to set sample, component and/or samplecomponent")
 
+try:
+    mlst = sample['categories']['mlst']['summary']['sequence_type']['senterica']
+except KeyError:
+    mlst = ""
+
 onerror:
     if not samplecomponent.has_requirements():
         common.set_status_and_save(sample, samplecomponent, "Requirements not met")
@@ -93,7 +98,7 @@ rule run_subspecies:
     input:
         rules.check_requirements.output.check_file,
     params:
-        mlsttype = sample['categories']['mlst']['summary']['sequence_type']['senterica'],
+        mlsttype = str(mlst),
         subspecies_reference = f"{resources_dir}/{component['resources']['subspecies_reference']}",
         mlst_db = f"{resources_dir}/{component['resources']['mlst_db']}"
     output:
