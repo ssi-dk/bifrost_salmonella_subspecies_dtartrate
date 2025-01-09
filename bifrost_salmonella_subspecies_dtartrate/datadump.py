@@ -10,7 +10,7 @@ from bifrostlib.datahandling import (Category, Component, Sample,
 def extract_subspecies_results(serotype: Category, results: Dict, component_name: str, file_name: str) -> None:
     #file_path = os.path.join(component_name, file_name)
     for line in open(file_name,'r'):
-        subspecies = line.strip().split("\t")
+        subspecies = line.strip()
     results['Subspecies'] = subspecies
     serotype["summary"]["Subspecies"] = results["Subspecies"]
 
