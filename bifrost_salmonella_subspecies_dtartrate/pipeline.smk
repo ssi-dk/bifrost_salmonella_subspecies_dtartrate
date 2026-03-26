@@ -117,7 +117,7 @@ rule run_dtartrate:
         f"{component['name']}/benchmarks/{rule_name}.benchmark"
     input:
         rules.check_requirements.output.check_file,
-        reads = sample['categories']['paired_reads']['summary']['data']
+        reads = sample['categories']['trimmed_reads']['summary']['data']
     params:
         dtartrate_db = f"{resources_dir}/{component['resources']['dtartrate_db']}"
     output:
