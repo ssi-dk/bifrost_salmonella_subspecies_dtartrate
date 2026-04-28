@@ -35,6 +35,10 @@ try:
 except KeyError:
     mlst = ""
 
+if not samplecomponent.has_requirements():
+   common.set_status_and_save(sample, samplecomponent, "Requirements not met")
+   raise SystemExit("Requirements not met")
+
 onerror:
     if not samplecomponent.has_requirements():
         common.set_status_and_save(sample, samplecomponent, "Requirements not met")
@@ -62,27 +66,6 @@ rule setup:
         samplecomponent['path'] = os.path.join(os.getcwd(), component['name'])
         samplecomponent.save()
 
-
-rule_name = "check_requirements"
-rule check_requirements:
-    message:
-        f"Running step:{rule_name}"
-    log:
-        out_file = f"{component['name']}/log/{rule_name}.out.log",
-        err_file = f"{component['name']}/log/{rule_name}.err.log",
-    benchmark:
-        f"{component['name']}/benchmarks/{rule_name}.benchmark"
-    input:
-        folder = rules.setup.output.init_file,
-    output:
-        check_file = f"{component['name']}/requirements_met",
-    params:
-        samplecomponent
-    run:
-        if samplecomponent.has_requirements():
-            with open(output.check_file, "w") as fh:
-                fh.write("")
-
 #- Templated section: end --------------------------------------------------------------------------
 
 #* Dynamic section: start **************************************************************************
@@ -95,8 +78,6 @@ rule run_subspecies:
         err_file = f"{component['name']}/log/{rule_name}.err.log",
     benchmark:
         f"{component['name']}/benchmarks/{rule_name}.benchmark"
-    input:
-        rules.check_requirements.output.check_file,
     params:
         mlsttype = str(mlst),
         subspecies_reference = f"{resources_dir}/{component['resources']['subspecies_reference']}",
